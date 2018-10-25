@@ -11,7 +11,7 @@
     "url": "git+https://github.com/dronedeploy/app-deploy-volume-viz.git"
   },
   "author": "Chris&Olya&Sonrisa",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dronedeploy/app-deploy-volume-viz/issues"
   },
