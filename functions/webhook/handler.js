@@ -1,6 +1,6 @@
 
 const tableUtils = require('./datastore/table');
-const TABLE_NAME = 'volume-viz-v1';
+const TABLE_NAME = 'volume-viz-v2';
 
 exports.routeHandler = function (req, res, ctx) {
   tableUtils.getTableId(TABLE_NAME, ctx).then(id => {

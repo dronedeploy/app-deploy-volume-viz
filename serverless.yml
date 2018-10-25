@@ -6,7 +6,7 @@ provider:
 plugins:
   - "@dronedeploy/dronedeploy-cli"
 
-app: mlicgovopvedhsixiuru
+app:
 
 functions:
   volume-viz:
@@ -15,10 +15,10 @@ functions:
     memory: 512
     resources:
       tables:
-        volume-viz-v1:
+        volume-viz-v2:
           description: "Save 3d model files for each annotation"
           columns:
-            - name: gif_url
+            - name: path_to_gif
               type: Text
               description: "gifUrl"
             - name: gltf
