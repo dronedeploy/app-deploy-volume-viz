@@ -1,12 +1,14 @@
 
 const tableUtils = require('./datastore/table');
+const TABLE_NAME = 'volume-viz-v1';
 
-const storeHandler = (req, res, ctx) => {
-  const TABLE_NAME = 'volume-viz';
+exports.routeHandler = function (req, res, ctx) {
   tableUtils.getTableId(TABLE_NAME, ctx).then(id => {
     const usersTable = ctx.datastore.table(id);
-
-    const { data } = JSON.parse(req.body);
+    console.log('req.body', req.body);
+    console.log('req.body', typeof req.body);
+    // const data = JSON.parse(req.body);
+    const data = req.body;
     console.log('data', data);
     const urlSegments = req.path;
     console.log('urlSegments', urlSegments);
@@ -43,12 +45,3 @@ const storeHandler = (req, res, ctx) => {
     }
   });
 };
-
-
-/**
- * Entry point for a request
- * We are handling routing here based on URL path
- *
- * Base case returns 400 (bad request)
- */
-exports.routeHandler = storeHandler(req, res, ctx);
