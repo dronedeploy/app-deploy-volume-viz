@@ -1,0 +1,29 @@
+<svg width="510.994" height="510.994" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_4"/>
+  <g id="svg_5"/>
+  <g id="svg_6"/>
+  <g id="svg_7"/>
+  <g id="svg_8"/>
+  <g id="svg_9"/>
+  <g id="svg_10"/>
+  <g id="svg_11"/>
+  <g id="svg_12"/>
+  <g id="svg_13"/>
+  <g id="svg_14"/>
+  <g id="svg_15"/>
+  <g id="svg_16"/>
+  <g id="svg_17"/>
+  <g id="svg_18"/>
+  <ellipse stroke="#1e80f0" ry="254.000008" rx="253.500013" id="svg_19" cy="255.496983" cx="256.497006" stroke-width="1.5" fill="#1e80f0"/>
+  <ellipse stroke="#ffffff" ry="37.000026" rx="37.000001" id="svg_21" cy="90.496983" cx="249.99701" stroke-width="1.5" fill="#ffffff"/>
+  <ellipse stroke="#ffffff" ry="37.000026" rx="37.000001" id="svg_22" cy="418.496983" cx="249.99701" stroke-width="1.5" fill="#ffffff"/>
+  <rect id="svg_23" height="273" width="28" y="120.496994" x="235.997009" stroke-width="1.5" stroke="#ffffff" fill="#ffffff"/>
+ </g>
+</svg>
