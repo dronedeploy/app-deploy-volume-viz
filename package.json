@@ -1,0 +1,22 @@
+{
+  "name": "volume-viz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dronedeploy/app-deploy-volume-viz.git"
+  },
+  "author": "Chris&Olya&Sonrisa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dronedeploy/app-deploy-volume-viz/issues"
+  },
+  "homepage": "https://github.com/dronedeploy/app-deploy-volume-viz#readme",
+  "devDependencies": {
+    "@dronedeploy/dronedeploy-cli": "1.1.2"
+  }
+}

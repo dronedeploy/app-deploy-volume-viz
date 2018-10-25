@@ -1,0 +1,33 @@
+service: volume-viz
+
+provider:
+  name: dronedeploy
+
+plugins:
+  - "@dronedeploy/dronedeploy-cli"
+
+app: ##
+
+functions:
+  volume-viz:
+    handler: dronedeploy
+    handlerPath: functions/webhook
+    memory: 512
+    resources:
+      tables:
+        volume-viz:
+          description: "Save 3d model files for each annotation"
+          columns:
+            - name: gifUrl
+              type: Text
+              description: "gifUrl"
+            - name: gltf
+              type: Text
+              length: 102400
+              description: "gltf JSONobj"
+            - name: annotationId
+              type: Text
+              description: "annotationId"
+package:
+  exclude:
+    - node_modules/**
