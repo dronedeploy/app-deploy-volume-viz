@@ -23,10 +23,29 @@ async function callFunction() {
   }
   // console.log('request url', `${functionUrl}/${curAnnId}`);
   // return await fetch(`${functionUrl}/${curAnnId}`, options);
-  return await fetch(`${functionUrl}/5bd21859b3f8e5000184e126`, options);  // this is hard coded for now since this is the only valid data in the database currently
-
+  const resCut = await fetch(`${functionUrl}/${curAnnId}-cut`, options);
+  const resFill = await fetch(`${functionUrl}/${curAnnId}-fill`, options);
+  await bakeRESTresult(resCut);
+  await bakeRESTresult(resFill);
+  init();
+  animate();
+  return ;  // this is hard coded for now since this is the only valid data in the database currently
 }
 
+async function bakeRESTresult(res){
+  const rawRes = await res.text();
+  const { result: { data: { cut_type, gltf, annotation_id } } } = JSON.parse(rawRes);
+  console.log('cut_type', cut_type);
+  console.log('annotation_id', annotation_id);
+  if (annotation_id){
+    window.resultCut = `models/${annotation_id}cut.gltf`;
+    window.resultFill = `models/${annotation_id}fill.gltf`;
+    console.log('gltf', window.resultCut );
+    console.log('gltf', window.resultFill);
+    return annotation_id;
+
+  }
+}
 
 /* ****************************************************************************
     Logic for subscribe to annotations
@@ -59,10 +78,12 @@ async function eventHandler(annotationId) {
     console.log('isValidRequestCandidate', isValidRequestCandidate)
     if (isValidRequestCandidate) {
       const res = await callFunction();
-      const result = await res.text();
-      const { result: { data: { cut_type, gltf, path_to_gif, annotation_id}}}  = JSON.parse(result);
-      console.log('result', cut_type);
-      console.log('result', annotation_id);
+      console.log('got responses, rendering model');
+      // if(cut_type)
+      // window.resultCut = gltf;
+      // window.resultFill = gltf
+      // console.log('result', cut_type);
+      // console.log('result', annotation_id);
     }
   }
 }
@@ -77,11 +98,14 @@ async function onAppInit() {
 onAppInit();
 let curAnnId = '';
 let curPlanId = '';
-
+window.resultCut = '';
+window.resultFill = '';
+window.viewWrapper = document.getElementById('view-wrapper');
 async function isQualified () {
   const isVolume = await checkCurAnnTypeIsVolume();
-  const toggleIsOn = toggle.value;
-  return isVolume && toggleIsOn;
+  return isVolume;
+  // const toggleIsOn = toggle.value;
+  // return isVolume && toggleIsOn;
 }
 
 /* ****************************************************************************

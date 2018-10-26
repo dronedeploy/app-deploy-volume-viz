@@ -13,10 +13,10 @@
   </head>
   <body>
           <!-- SET NAME OF APP AND LOGO HERE -->
-    <!-- <div class="container expand-container">
+    <div class="container expand-container">
       <div class="row expand-row">
         <div class="col-3">
-          <span class="lead vert-center"><img class="logo" src="images/linear-1.svg" alt="DroneDeploy">Volume 3D Visualization</span>
+          <span class="lead vert-center"><img class="logo" src="images/linear-1.svg" alt="DroneDeploy">Volume viz</span>
         </div>
         <div class="col-1 right">
           <i>
@@ -25,24 +25,24 @@
         </div>
       </div>
 
-      <div class="expand-section" style="display: none; margin-top: 15px;">
+      <div class="expand-section" style="display: none;">
         <br>
         <div class="row">
           <div class="text">Show 3D model</div>
           <dd-toggle off></dd-toggle>
         </div>
       <div class="plan-hidden-rows" style="display: none;">
-        <div class="text">Hello maybe I'm the i-frame</div>
+        <div id="view-wrapper"></div>
       </div>
-    </div> -->
+    </div>
 
+      <script src="js/script.js"></script>
       <script src="js/orbit-controls.js"></script>
       <script src="js/GLTF-loader.js"></script>
       <script src="js/WebGL.js"></script>
       <script src="js/volume-renderer.js"></script>
 
     <!-- DroneDeploy JS -->
-    <script src="js/script.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   </body>
