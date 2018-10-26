@@ -9,7 +9,7 @@ animate();
 function init() {
   container = document.createElement( 'div' );
   document.body.appendChild( container );
-  camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 1000 );
+  camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 0.1, 1000 );
   camera.position.set( 10, -70, 180 );
   controls = new THREE.OrbitControls( camera );
   // controls.target.set( 0, -0.2, -0.2 );
@@ -28,11 +28,11 @@ function init() {
 
   const loader = new THREE.GLTFLoader();
   loader.load( 'models/cut1.gltf', function ( gltf ) {
-    boundingBox = new THREE.Box3();
-    boundingBox.setFromObject( modelCluster );
-    center = boundingBox.getCenter();
+    // boundingBox = new THREE.Box3();
+    // boundingBox.setFromObject( modelCluster );
+    // center = boundingBox.getCenter();
 
-    console.log('What is at the center', center)
+    // console.log('What is at the center', center)
 
     modelCluster.add( gltf.scene );
     scene.add( gltf.scene );
