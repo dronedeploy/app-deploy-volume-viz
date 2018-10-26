@@ -1,16 +1,19 @@
 if ( WEBGL.isWebGLAvailable() === false ) {
   document.body.appendChild( WEBGL.getWebGLErrorMessage() );
 }
-let container, controls;
+let container, controls, tempNode;
 let boundingBox, camera, center, scene, renderer, light, modelCluster;
 init();
 animate();
 
 function init() {
+  tempNode = document.getElementById('temp-view');
+  if (tempNode) window.viewWrapper.removeChild(tempNode);
   container = document.createElement( 'div' );
-  const viewWrapper = document.getElementById('view-wrapper');
-  console.log('the viewWrapper div', viewWrapper);
-  viewWrapper.appendChild( container );
+  container.id = 'temp-view';
+  console.log('the viewWrapper div', window.viewWrapper);
+  console.log('the viewWrapper div', window.viewWrapper.hasChildNodes());
+  window.viewWrapper.appendChild( container );
   camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 0.1, 1000 );
   camera.position.set( 10, -70, 180 );
   controls = new THREE.OrbitControls( camera );
@@ -29,7 +32,7 @@ function init() {
   modelCluster = new THREE.Group();
 
   const loader = new THREE.GLTFLoader();
-  const defaultCut = 'models/5b2062c65f810c00019a7f74cut.gltf';
+  const defaultCut = `models/5b2062c65f810c00019a7f74cut.gltf`;
   const defaultFill = 'models/5b2062c65f810c00019a7f74fill.gltf';
   const actualCut = window.resultCut || defaultCut;
   const actualFill = window.resultFill || defaultFill;
