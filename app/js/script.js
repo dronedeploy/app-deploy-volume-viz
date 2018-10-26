@@ -61,6 +61,8 @@ async function eventHandler(annotationId) {
       const res = await callFunction();
       const result = await res.text();
       const { result: { data: { cut_type, gltf, path_to_gif, annotation_id}}}  = JSON.parse(result);
+      // window.resultCut = gltf;
+      // window.resultFill = gltf
       console.log('result', cut_type);
       console.log('result', annotation_id);
     }
@@ -77,11 +79,13 @@ async function onAppInit() {
 onAppInit();
 let curAnnId = '';
 let curPlanId = '';
-
+window.resultCut = '';
+window.resultFill = '';
 async function isQualified () {
   const isVolume = await checkCurAnnTypeIsVolume();
-  const toggleIsOn = toggle.value;
-  return isVolume && toggleIsOn;
+  return isVolume;
+  // const toggleIsOn = toggle.value;
+  // return isVolume && toggleIsOn;
 }
 
 /* ****************************************************************************
