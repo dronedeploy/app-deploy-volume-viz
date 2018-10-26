@@ -9,13 +9,12 @@ const FUNCTION_NAME = "volume-viz";
    **************************************************************************** */
 async function callFunction() {
   const api = await dronedeploy;
-
   // Grabs the URL of the function to call by name of function
   const functionUrl = await api.Functions.getUrl(FUNCTION_NAME);
 
   // Get a token to ensure auth when calling your function
   const token = await api.Authorization.getScopedToken();
-  console.log('token', `Bearer ${token}`);
+  // console.log('token', `Bearer ${token}`);
   const options = {
     method: "GET",
     headers: {
@@ -24,7 +23,7 @@ async function callFunction() {
   }
   // console.log('request url', `${functionUrl}/${curAnnId}`);
   // return await fetch(`${functionUrl}/${curAnnId}`, options);
-  return await fetch(`${functionUrl}/5bd21859b3f8e5000184e126`, options);
+  return await fetch(`${functionUrl}/5bd21859b3f8e5000184e126`, options);  // this is hard coded for now since this is the only valid data in the database currently
 
 }
 
@@ -63,7 +62,6 @@ async function eventHandler(annotationId) {
       const result = await res.text();
       const { result: { data: { cut_type, gltf, path_to_gif, annotation_id}}}  = JSON.parse(result);
       console.log('result', cut_type);
-      console.log('result', path_to_gif);
       console.log('result', annotation_id);
     }
   }
@@ -75,9 +73,6 @@ async function onAppInit() {
   curPlanId = curPlan.id;
   return api.Annotations.getCurrentlyViewed().subscribe((annotationId) => eventHandler(annotationId));
 }
-function putRequest () {
-  console.log('sending Get request');
-}
 
 onAppInit();
 let curAnnId = '';
@@ -86,7 +81,6 @@ let curPlanId = '';
 async function isQualified () {
   const isVolume = await checkCurAnnTypeIsVolume();
   const toggleIsOn = toggle.value;
-  // const hasStaticAssets = hmmm
   return isVolume && toggleIsOn;
 }
 
