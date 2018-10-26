@@ -2,7 +2,7 @@ if ( WEBGL.isWebGLAvailable() === false ) {
   document.body.appendChild( WEBGL.getWebGLErrorMessage() );
 }
 let container, controls;
-let camera, center, scene, renderer, light;
+let boundingBox, camera, center, scene, renderer, light, modelCluster;
 init();
 animate();
 
@@ -12,10 +12,8 @@ function init() {
   camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 1000 );
   camera.position.set( 10, -70, 180 );
   controls = new THREE.OrbitControls( camera );
-  controls.target.set( 0, -0.2, -0.2 );
-  controls.update();
-
-  // let boundingBox = new THREE.Box3();
+  // controls.target.set( 0, -0.2, -0.2 );
+  // controls.update();
 
   // background
 
@@ -25,29 +23,41 @@ function init() {
   light.position.set( 0, 1, 0 );
   scene.add( light );
 
-  // model
+  // models
+  modelCluster = new THREE.Group();
+
   const loader = new THREE.GLTFLoader();
   loader.load( 'models/cut1.gltf', function ( gltf ) {
-    // boundingBox.setFromObject( gltf );
-    // center = boundingBox.getCenter();
+    boundingBox = new THREE.Box3();
+    boundingBox.setFromObject( modelCluster );
+    center = boundingBox.getCenter();
 
-    // // set camera to rotate around center of object
-    // controls.target = center;
+    console.log('What is at the center', center)
 
-    // controls.target.set( 0, -0.2, -0.2 );
-    // controls.update();
-
+    modelCluster.add( gltf.scene );
     scene.add( gltf.scene );
   }, undefined, function ( e ) {
     console.error( e );
   } );
 
   loader.load( 'models/fill1.gltf', function ( gltf ) {
-
+    modelCluster.add( gltf.scene );
     scene.add( gltf.scene );
   }, undefined, function ( e ) {
     console.error( e );
   } );
+
+  // setting center from the object
+
+  // boundingBox = new THREE.Box3();
+  // boundingBox.setFromObject( modelCluster );
+  // center = boundingBox.getCenter();
+
+  // console.log('What is at the center', center)
+  // TODO: set camera to rotate around center of object
+  controls.target.set(0, 0, 0);
+  controls.update();
+
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
@@ -55,10 +65,6 @@ function init() {
   container.appendChild( renderer.domElement );
   window.addEventListener( 'resize', onWindowResize, false );
 }
-
-//helper to define axes
-const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
