@@ -6,20 +6,40 @@
     <meta charset="UTF-8">
     <!-- SET NAME OF APP HERE -->
     <title>Volume 3D Visualization</title>
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-        <!--DroneDeploy CSS -->
+    <!--DroneDeploy CSS -->
     <link rel="stylesheet" href="css/dd-styles.css">
     <link rel="stylesheet" href="css/custom-styles.css">
+    <script type="text/javascript" src="js/toggle.js"></script>
   </head>
   <body>
           <!-- SET NAME OF APP AND LOGO HERE -->
-    <h1>Volume 3D Visualization</h1></span>
+    <div class="container expand-container">
+      <div class="row expand-row">
+        <div class="col-3">
+          <span class="lead vert-center"><img class="logo" src="images/linear-1.svg" alt="DroneDeploy">Volume 3D Visualization</span>
+        </div>
+        <div class="col-1 right">
+          <i>
+            <img src="images/arrow-down.svg" alt="collapse" class="expand-arrow">
+          </i>
+        </div>
+      </div>
 
-      <script src="js/orbit-controls.js"></script>
+      <div class="expand-section" style="display: none; margin-top: 15px;">
+        <br>
+        <div class="row">
+          <div class="text">Show 3D model</div>
+          <dd-toggle off></dd-toggle>
+        </div>
+      <div class="plan-hidden-rows" style="display: none;">
+        <div class="text">Hello maybe I'm the i-frame</div>
+      </div>
+    </div>
+
+      <!-- <script src="js/orbit-controls.js"></script>
       <script src="js/GLTF-loader.js"></script>
       <script src="js/WebGL.js"></script>
-      <script src="js/volume-renderer.js"></script>
+      <script src="js/volume-renderer.js"></script> -->
 
     <!-- DroneDeploy JS -->
     <script src="js/script.js"></script>
@@ -27,3 +47,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   </body>
 </html>
+
+
+
+

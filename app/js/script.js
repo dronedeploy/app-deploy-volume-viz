@@ -3,191 +3,121 @@ const dronedeploy = new DroneDeploy({version: 1});
 
 // Name of the function to call. Name should be the same set in serverless.yml
 const FUNCTION_NAME = "volume-viz";
-// const functionPaths = {
-//   store: 'store'
-// }
 
-/**
- * Sets the url value to the DroneDeploy Datastore
- */
-async function onSave() {
-  disableSaveButton();
-  const iftttUrl = getUrl();
-  let response = await setStoredUrl(iftttUrl);
-  const status = response.status;
-  const text = await response.text();
-  console.log(status);
-  if (status != 200) {
-    console.log(`response from datastore | status: ${status}, message: ${text}`);
-    let errorMessage = `An error occurred, please try again. <br> Error message: ${text}`;
-    hide(controls.dataPage);
-    hide(controls.loadingPage);
-    setErrorMessage(errorMessage);
-    show(controls.errorPage);
-  } else {
-    showDataPageMessage(controls.dataMessage, 'URL was successfully saved.');
-  }
-  resetSaveButton();
-}
-
-/**
- * Generic function for calling out to Datastore
- */
-async function callStoreFunction(options) {
-  const api = await dronedeploy;
-
-  // Grabs the URL of the function to call by name of function
-  const functionUrl = await api.Functions.getUrl(FUNCTION_NAME);
-
-  // Get a token to ensure auth when calling your function
-  const token = await api.Authorization.getScopedToken();
-  console.log(token);
-  options.headers = {
-    'Authorization': `Bearer ${token}`
-  }
-  return fetch(`${functionUrl}/${functionPaths.store}`, options);
-}
-
-/**
- * Sets the url value to the DroneDeploy Datastore
- */
-async function setStoredUrl(url) {
-  const options = {
-    method: "POST",
-    body: JSON.stringify({
-      endpoint: url
-    })
-  }
-  return await callStoreFunction(options);
-}
-
-/**
- * Retrives the stored url value if any
- */
-async function getStoredUrl() {
-  const options = {};
-  return await callStoreFunction(options);
-}
-
-/**
- * Actions to take when a user expands the app
- * 1. Show the loading page
- * 2. Query DroneDeploy Datastore for the stored URL
- * 3. Handle UI depending on response code
- */
-/**
- * Generic function for calling out to Function
- */
+/* ****************************************************************************
+    Random auth token stuff for postman
+   **************************************************************************** */
 async function callFunction() {
   const api = await dronedeploy;
-
   // Grabs the URL of the function to call by name of function
   const functionUrl = await api.Functions.getUrl(FUNCTION_NAME);
 
   // Get a token to ensure auth when calling your function
   const token = await api.Authorization.getScopedToken();
-  console.log('token', `Bearer ${token}`);
-  // options = {
-  //   method: "POST",
-  //   body: JSON.stringify({ data: "hello world" }),
-  //   headers: {
-  //     Authorization: `Bearer ${token}`
-  //   }
-  // }
-  // return fetch(`${functionUrl}`, options);
-}
-async function onExpand() {
-  console.log('wrokming');
-  callFunction();
-
-}
-
-/**
- * ----------------------------------- UI Controls ------------------------------------------------
- */
-let isExpanded = false;
-const upArrow = 'https://s3.amazonaws.com/drone-deploy-plugins/templates/login-example-imgs/arrow-up.svg';
-const downArrow = 'https://s3.amazonaws.com/drone-deploy-plugins/templates/login-example-imgs/arrow-down.svg';
-const expandArrow = document.querySelector('.expand-arrow');
-const expandBody = document.querySelector('.expand-section');
-const expandRow = document.querySelector('.expand-row');
-const controls = {
-  url: '#url',
-  loadingPage: '#loading-page',
-  dataPage: '#data-page',
-  dataMessage: '#data-message',
-  errorPage: '#error-page',
-  errorMessage: '#error-message',
-  saveButton: '#save-button'
-}
-
-expandRow.addEventListener('click', function() {
-  isExpanded = !isExpanded
-  if (isExpanded){
-    expandArrow.src = upArrow;
-    expandBody.style.display = 'block';
-    onExpand();
-  } else{
-    expandArrow.src = downArrow;
-    expandBody.style.display = 'none';
-    onCollapse();
+  // console.log('token', `Bearer ${token}`);
+  const options = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   }
+  // console.log('request url', `${functionUrl}/${curAnnId}`);
+  // return await fetch(`${functionUrl}/${curAnnId}`, options);
+  return await fetch(`${functionUrl}/5bd21859b3f8e5000184e126`, options);  // this is hard coded for now since this is the only valid data in the database currently
+
+}
+
+
+/* ****************************************************************************
+    Logic for subscribe to annotations
+   **************************************************************************** */
+async function getCurrentActiveAnnInfo(annotationId, planID) {
+  const api = await dronedeploy;
+  const curPlanAnnotations = await api.Annotations.get(planID);
+  let annotation = null;
+  for (let i = 0; i < curPlanAnnotations.length; i++) {
+    if (curPlanAnnotations[i].id === annotationId) {
+      annotation = curPlanAnnotations[i];
+    }
+  }
+  console.log('cur ann', annotation);
+  return annotation;
+}
+
+async function checkCurAnnTypeIsVolume () {
+  const curAnn = await getCurrentActiveAnnInfo(curAnnId, curPlanId);
+  console.log('isVolumeType', curAnn.annotationType === "VOLUME");
+  return curAnn.annotationType === "VOLUME";
+}
+
+async function eventHandler(annotationId) {
+  console.log('annotationId', annotationId);
+  if (annotationId && annotationId !== curAnnId) {
+    curAnnId = annotationId;
+    console.log('curAnn', curAnnId)
+    const isValidRequestCandidate = await isQualified();
+    console.log('isValidRequestCandidate', isValidRequestCandidate)
+    if (isValidRequestCandidate) {
+      const res = await callFunction();
+      const result = await res.text();
+      const { result: { data: { cut_type, gltf, path_to_gif, annotation_id}}}  = JSON.parse(result);
+      console.log('result', cut_type);
+      console.log('result', annotation_id);
+    }
+  }
+}
+
+async function onAppInit() {
+  const api = await dronedeploy;
+  const curPlan = await api.Plans.getCurrentlyViewed();
+  curPlanId = curPlan.id;
+  return api.Annotations.getCurrentlyViewed().subscribe((annotationId) => eventHandler(annotationId));
+}
+
+onAppInit();
+let curAnnId = '';
+let curPlanId = '';
+
+async function isQualified () {
+  const isVolume = await checkCurAnnTypeIsVolume();
+  const toggleIsOn = toggle.value;
+  return isVolume && toggleIsOn;
+}
+
+/* ****************************************************************************
+    Toggle control section
+   **************************************************************************** */
+const toggle = document.querySelector('dd-toggle');
+const planRow = document.querySelector('.plan-hidden-rows');
+const toggleControls = function (on) {
+  if (on) {
+    planRow.style.display = 'block';
+  } else {
+    planRow.style.display = 'none';
+  }
+}
+toggle.addEventListener('change', function (e) {
+  toggleControls(e.target.value);
 });
 
-function onCollapse() {
-  hide(controls.loadingPage);
-  hide(controls.dataPage);
-}
+/* ****************************************************************************
+    Expandable Section
+   **************************************************************************** */
 
-function getUrl() {
-  const select = document.querySelector(controls.url);
-  return select.value;
-}
+var isExpanded = false;
+var upArrow = 'https://s3.amazonaws.com/drone-deploy-plugins/templates/login-example-imgs/arrow-up.svg';
+var downArrow = 'https://s3.amazonaws.com/drone-deploy-plugins/templates/login-example-imgs/arrow-down.svg';
+var expandArrow = document.querySelector('.expand-arrow');
+var expandBody = document.querySelector('.expand-section');
+var expandRow = document.querySelector('.expand-row');
 
-function setUrl(url) {
-  const select = document.querySelector(controls.url);
-  select.value = url;
-  Materialize.updateTextFields();
-}
-
-function setElementsDisplay(display, ...selectors) {
-  selectors.forEach((selector) => document.querySelector(selector).style.display = display);
-}
-
-function setElementsInnerHtml(value, ...selectors) {
-  selectors.forEach((selector) => document.querySelector(selector).innerHTML = value);
-}
-
-function setErrorMessage(errorMessage) {
-  setElementsInnerHtml(errorMessage, controls.errorMessage);
-}
-
-function disableSaveButton() {
-  setElementsInnerHtml('Saving', controls.saveButton);
-  document.querySelector(controls.saveButton).disabled = true;
-}
-
-function resetSaveButton() {
-  setElementsInnerHtml('Save', controls.saveButton);
-  document.querySelector(controls.saveButton).disabled = false;
-}
-
-function showDataPageMessage(selector, message) {
-  document.querySelector(selector).innerHTML = message;
-  document.querySelector(selector).style.display = '';
-  setTimeout(() => {
-    document.querySelector(selector).style.display = 'none';
-  }, 3000);
-}
-
-function show(...selectors) {
-  setElementsDisplay('', ...selectors);
-}
-
-function hide(...selectors) {
-  setElementsDisplay('none', ...selectors);
-}
-
-function hideAllPages() {
-  setElementsDisplay('none', '.page');
-}
+expandRow.addEventListener('click', function () {
+  isExpanded = !isExpanded
+  if (isExpanded) {
+    expandArrow.src = upArrow;
+    expandBody.style.display = 'block';
+  } else {
+    expandArrow.src = downArrow;
+    expandBody.style.display = 'none';
+  }
+});
