@@ -33,3 +33,8 @@ button[disabled]:hover {
     padding-top: 0px;
     padding-bottom: 0px;
 }
+
+canvas {
+  width: 280px !important;
+  height: 280px !important;
+}

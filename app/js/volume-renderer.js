@@ -1,23 +1,21 @@
 if ( WEBGL.isWebGLAvailable() === false ) {
   document.body.appendChild( WEBGL.getWebGLErrorMessage() );
 }
-var container, stats, controls;
-var camera, scene, renderer, light;
+let container, controls;
+let boundingBox, camera, center, scene, renderer, light, modelCluster;
 init();
 animate();
 
 function init() {
   container = document.createElement( 'div' );
   document.body.appendChild( container );
-  camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 20 );
-  camera.position.set( -1.8, 0.9, 2.7 );
+  camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  camera.position.set( 10, -70, 180 );
   controls = new THREE.OrbitControls( camera );
-  controls.target.set( 0, -0.2, -0.2 );
-  controls.update();
+  // controls.target.set( 0, -0.2, -0.2 );
+  // controls.update();
 
-
-
-  // envmap
+  // background
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color('antiquewhite');
@@ -25,14 +23,41 @@ function init() {
   light.position.set( 0, 1, 0 );
   scene.add( light );
 
-  // model
-  var loader = new THREE.GLTFLoader();
-  loader.load( 'models/sample4.gltf', function ( gltf ) {
-    console.log('What are we getting for scene', gltf.scene)
+  // models
+  modelCluster = new THREE.Group();
+
+  const loader = new THREE.GLTFLoader();
+  loader.load( 'models/5b2062c65f810c00019a7f74cut.gltf', function ( gltf ) {
+    // boundingBox = new THREE.Box3();
+    // boundingBox.setFromObject( modelCluster );
+    // center = boundingBox.getCenter();
+
+    // console.log('What is at the center', center)
+
+    modelCluster.add( gltf.scene );
     scene.add( gltf.scene );
   }, undefined, function ( e ) {
     console.error( e );
   } );
+
+  loader.load( 'models/5b2062c65f810c00019a7f74fill.gltf', function ( gltf ) {
+    modelCluster.add( gltf.scene );
+    scene.add( gltf.scene );
+  }, undefined, function ( e ) {
+    console.error( e );
+  } );
+
+  // setting center from the object
+
+  // boundingBox = new THREE.Box3();
+  // boundingBox.setFromObject( modelCluster );
+  // center = boundingBox.getCenter();
+
+  // console.log('What is at the center', center)
+  // TODO: set camera to rotate around center of object
+  controls.target.set(0, 0, 0);
+  controls.update();
+
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
@@ -40,6 +65,7 @@ function init() {
   container.appendChild( renderer.domElement );
   window.addEventListener( 'resize', onWindowResize, false );
 }
+
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
