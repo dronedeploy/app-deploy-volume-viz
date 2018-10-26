@@ -27,7 +27,7 @@ function init() {
   modelCluster = new THREE.Group();
 
   const loader = new THREE.GLTFLoader();
-  loader.load( 'models/cut1.gltf', function ( gltf ) {
+  loader.load( 'models/5b2062c65f810c00019a7f74cut.gltf', function ( gltf ) {
     // boundingBox = new THREE.Box3();
     // boundingBox.setFromObject( modelCluster );
     // center = boundingBox.getCenter();
@@ -40,7 +40,7 @@ function init() {
     console.error( e );
   } );
 
-  loader.load( 'models/fill1.gltf', function ( gltf ) {
+  loader.load( 'models/5b2062c65f810c00019a7f74fill.gltf', function ( gltf ) {
     modelCluster.add( gltf.scene );
     scene.add( gltf.scene );
   }, undefined, function ( e ) {
